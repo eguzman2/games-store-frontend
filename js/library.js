@@ -1,7 +1,17 @@
-function catalogue() {
-    var body = JSON.stringify({})
-    console.log(url_get_videogames);
-    fetch(url_get_videogames, {
+function getGames() {
+    var user_id = sessionStorage.getItem('id');
+    console.log(user_id);
+    if (!user_id || user_id == "undefined"){
+        bootstrap_alert.warning("<strong> Algo salio mal :( por favor vuelve a iniciar sesion</strong>");
+        return false;
+    }
+    var request_data = {
+        'user_id': user_id
+    };
+
+    var body = JSON.stringify(request_data)
+    console.log(url_get_user_videogames);
+    fetch(url_get_user_videogames, {
         method: 'POST',
         body: body,
         headers: {
@@ -15,12 +25,14 @@ function catalogue() {
     .then(response => {
         console.log(response);
         if(response.error){
-            bootstrap_alert.warning("<strong> No se pudo obtener la informacion del los videojuegos</strong>");
+            bootstrap_alert.warning("<strong>"+response.message+"</strong>");
         } else{
+            var games_data = response.games_data
+
             game_counter = 0
             games_str = "<div class='row'>"
-            for (let game_counter = 0; game_counter < response.length; game_counter++) {
-                const element = response[game_counter];
+            for (let game_counter = 0; game_counter < games_data.length; game_counter++) {
+                const element = games_data[game_counter];
                 console.log(element);
                 if (game_counter % 3 == 0){
                     if (game_counter != 0){

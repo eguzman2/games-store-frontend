@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
     <?php include_once('head.php');?>
-    <script type="text/javascript" src="js/catalogue.js"></script>
+    <script type="text/javascript" src="js/search.js"></script>
 </head>
-<body onload="catalogue()">
+<body onload="search()">
     <div id="wrapper">
         <?php include('nav.php');?>
         <div id="page-wrapper">
             <div id = "alert_placeholder"></div>
-            <!-- <div class="text-center"><h1>Completed Projects</h1></div> -->
             <div class="container">
                 <div class="col-lg-12">
-                    <h1> I NEED HEALING Videogames <small>Catálogo</small></h1>
+                    <h1> Resultados de la busqueda por categoría <small id="search_text_header"></small></h1>
                     <hr/>
                 </div>
                 <div id="container" class="row">

@@ -12,12 +12,13 @@ function check_role_videogame() {
     }
     if (role != 3){
         document.getElementById("div_add_button").setAttribute('style', '');
+        document.getElementById("leave_comment").setAttribute('style', '');
     }
 }
 function get_video_game() {
-    game_id = getUrlParam('id', false);
+    var game_id = getUrlParam('id', false);
     console.log(game_id);
-    if (!game_id){
+    if (!game_id || game_id == "undefined"){
         bootstrap_alert.warning("<strong> Algo salio mal :( por favor vuelve a seleccionar un videojuego</strong>");
         return false;
     }
@@ -67,25 +68,31 @@ function get_video_game() {
                 price = 'Gratis';
             }
             $('#price').html(price);
+            $('#game_id').val(game_id);
             $('#add_button').attr({
                 "onclick": "add_to_library("+game_id+")"
             });
             $('#description').html(response.description);
-
+            check_game_in_library(game_id);
+            loadComments(game_id)
         }
     })
 }
-function add_to_library(game_id) {
-    return true;
-    var request_data = {
-        'username': username,
-        'password': password
-    };
 
+function check_game_in_library(game_id) {
+    var user_id = sessionStorage.getItem('id');
+    if (!user_id || user_id == "undefined"){
+        // bootstrap_alert.warning("<strong> Algo salio mal :( por favor vuelve a iniciar sesion</strong>");
+        return false;
+    }
+    var request_data = {
+        'user_id': user_id,
+        'game_id': game_id
+    };
     var body = JSON.stringify(request_data)
     console.log(body);
-    console.log(url_login);
-    fetch(url_login, {
+    console.log(url_check_user_videogame);
+    fetch(url_check_user_videogame, {
         method: 'POST',
         body: body,
         headers: {
@@ -99,13 +106,131 @@ function add_to_library(game_id) {
     .then(response => {
         console.log(response);
         if(response.error){
-            bootstrap_alert.warning("<strong> No se pudo iniciar sesion: " + response.message + "</strong>");
+            bootstrap_alert.warning("<strong> Ocurrio un error al revisar el juego en la biblioteca: " + response.message + "</strong>");
         } else{
-            sessionStorage.setItem('id', response.id);
-            var display_name = response.first_name + " " + response.last_name;
-            sessionStorage.setItem('display_name', display_name);
-            sessionStorage.setItem('user_type', response.user_type);
-            window.location.href = "index.php";
+            if(response.exists){
+                $('#add_button').attr({
+                    "disabled": ""
+                });
+                $('#add_button').html("Ya en mi biblioteca")
+            }
+        }
+    })
+}
+
+function add_to_library(game_id) {
+    var user_id = sessionStorage.getItem('id');
+    if (!user_id || user_id == "undefined"){
+        // bootstrap_alert.warning("<strong> Algo salio mal :( por favor vuelve a iniciar sesion</strong>");
+        return false;
+    }
+    var request_data = {
+        'user_id': user_id,
+        'game_id': game_id
+    };
+
+    var body = JSON.stringify(request_data)
+    console.log(body);
+    console.log(url_add_user_videogame);
+    fetch(url_add_user_videogame, {
+        method: 'POST',
+        body: body,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+    .catch(err => {
+        console.error('Error:', err)
+        bootstrap_alert.danger('<strong>A ocurrido un error al conectar con el servidor.</strong> Contacte a soporte tecnico.');
+    })
+    .then(response => {
+        console.log(response);
+        if(response.error){
+            bootstrap_alert.warning("<strong> No se pudo agregar el juego: " + response.message + "</strong>");
+        } else{
+            bootstrap_alert.success("<strong> Se ha agregado el juego a <a href='library.php'>tu biblioteca</a></strong>");
+            $('#add_button').attr({
+                "disabled": ""
+            });
+            $('#add_button').html("Ya en mi biblioteca")
+        }
+    })
+}
+function addComment() {
+    var user_id = sessionStorage.getItem('id');
+    if (!user_id || user_id == "undefined"){
+        bootstrap_alert.warning("<strong> Algo salio mal :( por favor vuelve a iniciar sesion</strong>");
+        return false;
+    }
+    var game_id = $('#game_id').val();
+    console.log("game: " + game_id)
+    if (!game_id || game_id == "undefined"){
+        bootstrap_alert.warning("<strong> Algo salio mal :(</strong>");
+        return false;
+    }
+    var username = sessionStorage.getItem('username');
+    var comment = $("#text_comment").val();
+    var request_data = {
+        'user_id': user_id,
+        'game_id': game_id,
+        'username': username,
+        'comment': comment
+    };
+
+    var body = JSON.stringify(request_data)
+    console.log(body);
+    console.log(url_add_videogame_comment);
+    fetch(url_add_videogame_comment, {
+        method: 'POST',
+        body: body,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+    .catch(err => {
+        console.error('Error:', err)
+        bootstrap_alert.danger('<strong>A ocurrido un error al conectar con el servidor.</strong> Contacte a soporte tecnico.');
+    })
+    .then(response => {
+        console.log(response);
+        if(response.error){
+            bootstrap_alert.warning("<strong> No se pudo agregar el commentario: " + response.message + "</strong>");
+        } else{
+            loadComments(game_id);
+        }
+    })
+}
+function loadComments(game_id) {
+    var request_data = {
+        'game_id': game_id,
+    };
+
+    var body = JSON.stringify(request_data)
+    console.log(body);
+    console.log(url_get_videogame_comments);
+    fetch(url_get_videogame_comments, {
+        method: 'POST',
+        body: body,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+    .catch(err => {
+        console.error('Error:', err)
+        bootstrap_alert.danger('<strong>A ocurrido un error al conectar con el servidor.</strong> Contacte a soporte tecnico.');
+    })
+    .then(response => {
+        console.log(response);
+        if(response.error){
+            // bootstrap_alert.warning("<strong> No se pudo agregar el commentario: " + response.message + "</strong>");
+        } else{
+            var comments_string = ""
+            for (let comment_counter = 0; comment_counter < response.comments.length; comment_counter++) {
+                const element = response.comments[comment_counter];
+                comments_string += '<div class="panel panel-default"><div class="panel-heading">'+element.username+'</div>';
+                comments_string += '<div class="panel-body">'+element.comment+'</div></div>';
+            }
+            $('#comments').html(comments_string);
         }
     })
 }

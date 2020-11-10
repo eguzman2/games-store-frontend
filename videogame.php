@@ -12,8 +12,9 @@
                     <h1>Completed Projects</h1> background-image: url(https://i.ytimg.com/vi/YHcP490H1J8/maxresdefault.jpg)
             </div> -->
             <div id='banner'></div>
-            <div id = "alert_placeholder"></div>
             <div class="container">
+            <input type="hidden" id="game_id"/>
+            <div id = "alert_placeholder"></div>
                 
                 <div class="col-lg-12">
                     <h1><span id="name"></span> <small id="year"></small></h1>
@@ -36,6 +37,19 @@
                         </div>  
                         <br/>
                         <p id="description"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <h2><span>Comentarios</span> </h2>
+                    <div class="col-xs-12" id="comments"></div>
+                    
+                <div class="row" id="leave_comment" style="display: none;">
+                    <div class="well">
+                        <h4>Deja un comentario:</h4>
+                        <div class="form-group">
+                            <textarea id="text_comment" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button onclick="addComment()" class="btn btn-primary">Enviar</button>
                     </div>
                 </div>
             </div>

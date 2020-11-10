@@ -108,6 +108,7 @@ function update() {
             bootstrap_alert.success("<strong>" + response.message + "</strong>");
             var display_name = response.first_name + " " + response.last_name;
             sessionStorage.setItem('display_name', display_name);
+            sessionStorage.setItem('username', username);
         }
     })
 }

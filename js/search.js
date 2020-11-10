@@ -1,7 +1,19 @@
-function catalogue() {
-    var body = JSON.stringify({})
-    console.log(url_get_videogames);
-    fetch(url_get_videogames, {
+function search() {
+    search_text = getUrlParam('category', false);
+    search_text = decodeURI(search_text);
+    if (!search_text || search_text == "undefined"){
+        bootstrap_alert.warning("<strong> Algo salio mal :( por favor vuelve a realizar una busqueda</strong>");
+        return false;
+    }
+    $('#search_text_header').html(search_text);
+
+    var request_data = {
+        'search_text': search_text
+    };
+
+    var body = JSON.stringify(request_data)
+    console.log(url_find_videogames_by_category);
+    fetch(url_find_videogames_by_category, {
         method: 'POST',
         body: body,
         headers: {
@@ -15,7 +27,7 @@ function catalogue() {
     .then(response => {
         console.log(response);
         if(response.error){
-            bootstrap_alert.warning("<strong> No se pudo obtener la informacion del los videojuegos</strong>");
+            $('#container').html('<div class="text-center"><h2 class="text-muted">Sin resultados :(</h2></div>');
         } else{
             game_counter = 0
             games_str = "<div class='row'>"

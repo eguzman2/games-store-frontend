@@ -38,6 +38,8 @@ function check_role() {
     if (role == 1 || role == 2){
         $('#user_name').html(user_name);
         document.getElementById("menu_log_in_top").setAttribute('style', 'display: none;');
+        document.getElementById("menu_sign_in_top").setAttribute('style', 'display: none;');
+        document.getElementById("menu_log_in").setAttribute('style', 'display: none;');
         document.getElementById("menu_log_out_top").setAttribute('style', '');
         document.getElementById("menu_my_profile_top").setAttribute('style', '');
         document.getElementById("menu_log_out").setAttribute('style', '');
@@ -65,4 +67,14 @@ function getUrlParam(parameter, defaultvalue){
         urlparameter = getUrlVars()[parameter];
         }
     return urlparameter;
+}
+
+function searchByCategory() {
+    var search_text = $("#search_input").val();
+
+    if(search_text == undefined || search_text == ''){
+        return false;
+    }
+    url = "search.php?category="+search_text;
+    window.location.href = url;
 }

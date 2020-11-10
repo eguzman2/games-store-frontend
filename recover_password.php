@@ -7,6 +7,13 @@
 </head>
 <body>
     <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">            
+                <a class="navbar-brand" href="index.php">
+                    <img class="media-object" src="logo.png" style="height: 30px;" alt="INH Videogames">
+                </a>
+            </div>
+        </nav>
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12 text-center v-center">

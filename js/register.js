@@ -108,6 +108,7 @@ function register() {
             var display_name = response.first_name + " " + response.last_name;
             sessionStorage.setItem('display_name', display_name);
             sessionStorage.setItem('user_type', response.user_type);
+            sessionStorage.setItem('username', response.username);
             window.location.href = "index.php";
         }
     })
